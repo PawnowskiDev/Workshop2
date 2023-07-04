@@ -6,7 +6,6 @@ import pl.coderslab.DbUtil;
 
 import java.sql.*;
 import java.util.Arrays;
-import java.util.ResourceBundle;
 
 public class UserDao {
 
@@ -37,7 +36,6 @@ public class UserDao {
             } else {
                 System.out.println("Insert operation failed");
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -87,11 +85,11 @@ public class UserDao {
         }
     }
 
-    public void delete (int userId) {
+    public User delete (int id) {
         try (Connection connection = DbUtil.connection();
             PreparedStatement statement = connection.prepareStatement("DELETE FROM workshop2.users WHERE id = ?")) {
 
-            statement.setInt(1, userId);
+            statement.setInt(1, id);
 
             int affectedRows = statement.executeUpdate();
 
@@ -103,9 +101,10 @@ public class UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
-    public User[] findAll() {
 
+    public User[] findAll() {
         User[] users = new User[0];
 
         try (Connection connection = DbUtil.connection();
@@ -117,17 +116,12 @@ public class UserDao {
                 User user = mapResultSetToUser(resultSet);
                 users = addToArray(user, users);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
         return users;
     }
 
-
-    
     public String hashPassword (String password) {
         return BCrypt.hashpw (password, BCrypt.gensalt());
     }
